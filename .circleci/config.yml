@@ -12,6 +12,12 @@ jobs:
       - run:
           command: npm run build
           name: Build the app
+      - run:
+          command: npm run test
+          name: Test the app
+      - run:
+          command: npm audit --audit-level=critical
+          name: Analyze the packages and dependencies
 
 workflows:
   my_workflow:
