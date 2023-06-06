@@ -12,3 +12,8 @@ jobs:
       - run:
           command: npm run build
           name: Build the app
+
+workflows:
+  my_workflow:
+    jobs:
+      - build-test
