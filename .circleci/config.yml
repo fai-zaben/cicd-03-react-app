@@ -1,23 +1,57 @@
 version: 2.1
 
 jobs:
-  build-test:
+  # build-test:
+  #   docker: 
+  #     - image: circleci/node:13.8.0
+  #   steps:
+  #     - checkout
+  #     - run: 
+  #         command: npm i
+  #         name: install dependencies
+  #     - run:
+  #         command: npm run build
+  #         name: Build the app
+  #     - run:
+  #         command: npm run test
+  #         name: Test the app
+  #     - run:
+  #         command: npm audit --audit-level=critical
+  #         name: Analyze the packages and dependencies
+
+  build:
     docker: 
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - run: 
-          command: npm i
-          name: install dependencies
-      - run:
-          command: npm run build
-          name: Build the app
-      - run:
-          command: npm run test
-          name: Test the app
-      - run:
-          command: npm audit --audit-level=critical
-          name: Analyze the packages and dependencies
+      - run: npm i
+      - save_cache:
+          paths:
+            - /src/node_modules
+          key: "npm-packages"
+      - run: npm run build
+
+  test:
+    docker: 
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - "npm-packages"
+      - run: npm i
+      - run: npm run test
+
+  analyze:
+    docker: 
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout 
+      - restore_cache:
+          keys:
+            - "npm-packages"
+      - run: npm i 
+      - run: npm audit --audit-level=critical
 
 workflows:
   my_workflow:
