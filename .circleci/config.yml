@@ -53,6 +53,16 @@ jobs:
       - run: npm i 
       - run: npm audit --audit-level=critical
 
+  deploy:
+    docker: 
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run:
+          name: Deploy Main to Heroku
+          command: |
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git main
+      
 workflows:
   my_workflow:
     jobs:
@@ -63,3 +73,6 @@ workflows:
       - analyze:
           requires:
             - test
+      - deploy:
+          requires:
+            - analyze
